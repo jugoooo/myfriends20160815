@@ -96,7 +96,7 @@ $dbh= null;
             <?php foreach ( $areas as $area):?>
             <tr>
               <td><div class="text-center"><?php echo $area['area_id']; ?></div></td>
-              <td><div class="text-center"><a href="show.html"><?php echo $area['area_name'] ?></a></div></td>
+              <td><div class="text-center"><a href="show.php?area_id=<?php echo $area['area_id']; ?>"><?php echo $area['area_name'] ?></a></div></td>
               <td><div class="text-center">3</div></td>
             </tr>
           <?php endforeach; ?>
