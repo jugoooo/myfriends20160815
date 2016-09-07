@@ -10,7 +10,6 @@ $password='';
 //2 セレクトボックス用の都道府県を取得
 ////1 都道府県取得用のSQL文を作成
 $sql='SELECT * FROM `areas`';
-// $data[]=$area_id;
 
 ////2 SQL実行
 $stmt= $dbh->prepare($sql);
@@ -28,8 +27,25 @@ while (1) {
     $areas[]= $rec;
   }
 
+//DBに登録する処理
+  if(!empty($_POST)){
+    //SQL作成
+    $sql='INSERT INTO `friends`(`friend_name`, `area_id`, `gender`, `age`, `created`) VALUES (?,?,?,?,now())';
+    $data[]= $_POST['name'];
+    $data[]= $_POST['area_id'];
+    $data[]= $_POST['gender'];
+    $data[]= $_POST['age'];
 
-// var_dump($areas);
+    //SQL実行
+$stmt= $dbh->prepare($sql);
+  $stmt->execute($data);
+
+////登録後index.phpに移行するようにする
+  header('Location: index.php');
+exit();
+
+  }
+
 
 //DBを切断
 $dbh= null;
