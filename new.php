@@ -1,3 +1,42 @@
+<?php
+ // ここにDBに登録する処理を記述する
+//1 DBへ接続
+$dsn= 'mysql:dbname=myfriends;host=localhost';
+$user= 'root';
+$password='';
+  $dbh= new PDO($dsn, $user, $password);
+  $dbh->query('SET NAMES utf8');
+
+//2 セレクトボックス用の都道府県を取得
+////1 都道府県取得用のSQL文を作成
+$sql='SELECT * FROM `areas`';
+// $data[]=$area_id;
+
+////2 SQL実行
+$stmt= $dbh->prepare($sql);
+  $stmt->execute();
+
+  //取得データ格納用変数
+  $areas= array();
+
+////3 データを取得
+while (1) {
+    $rec= $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($rec==false){
+      break;
+    }
+    $areas[]= $rec;
+  }
+
+
+// var_dump($areas);
+
+//DBを切断
+$dbh= null;
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -62,11 +101,9 @@
               <div class="col-sm-10">
                 <select class="form-control" name="area_id">
                   <option value="0">出身地を選択</option>
-                  <option value="1">北海道</option>
-                  <option value="2">青森</option>
-                  <option value="3">岩手</option>
-                  <option value="4">宮城</option>
-                  <option value="5">秋田</option>
+                  <?php foreach($areas as $area):?>
+                  <option value="<?php echo $area['area_id'];?>"><?php echo $area['area_name'];?></option>
+                  <?php endforeach; ?>
                 </select>
               </div>
             </div>
