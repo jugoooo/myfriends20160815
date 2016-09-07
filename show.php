@@ -133,7 +133,7 @@ $dbh= null;
           </tbody>
         </table>
 
-        <input type="button" class="btn btn-default" value="新規作成" onClick="location.href='new.html'">
+        <input type="button" class="btn btn-default" value="新規作成" onClick="location.href='new.php'">
       </div>
     </div>
   </div>
