@@ -28,6 +28,12 @@ $stmt= $dbh->prepare($sql);
   //友達のデータを取得
   $friends= $stmt->fetch(PDO::FETCH_ASSOC);
 
+  ///////////////////////////////////////////////
+//値を変数に格納
+    $editName = $friends['friend_name'];
+    $editAge = $friends['age'];
+
+
 ////////////////////////////////////////////////////
   //セレクトボックス用の都道府県を取得
   //SQL文（DB内のareasというテーブルから引っ張ってくる）
@@ -49,11 +55,21 @@ while (1) {
   }
   // var_dump($areas);
 
-///////////////////////////////////////////////
-//値を変数に格納
-    $editName = $friends['friend_name'];
-    $editAge = $friends['age'];
+//データ更新（更新ボタンクリック時）
+if(!empty($_POST)){
+$sql = 'UPDATE `friends` SET `friend_name`=?,`area_id`=?,`gender`=?,`age`=? WHERE `friend_id`=?';
+$edit_data[]= $_POST['name'];
+$edit_data[]= $_POST['area_id'];
+$edit_data[]= $_POST['gender'];
+$edit_data[]= $_POST['age'];
+$edit_data[]= $friend_id;
 
+ // SQL実行
+$stmt= $dbh->prepare($sql);
+  $stmt->execute($edit_data);
+
+
+}
 
 //DB切断
 $dbh= null;
@@ -109,12 +125,12 @@ $dbh= null;
     <div class="row">
       <div class="col-md-4 content-margin-top">
         <legend>友達の編集</legend>
-        <form method="post" action="" class="form-horizontal" role="form">
+        <form method="post" action="edit.php?friend_id=<?php echo $friends['friend_id']; ?>" class="form-horizontal" role="form">
             <!-- 名前 -->
             <div class="form-group">
               <label class="col-sm-2 control-label">名前</label>
               <div class="col-sm-10">
-                <input type="text" name="friend_name" class="form-control" placeholder="editName" required value="<?php echo $editName; ?>">
+                <input type="text" name="name" class="form-control" placeholder="editName" required value="<?php echo $editName; ?>">
               </div>
             </div>
             <!-- 出身 -->
