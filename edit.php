@@ -1,4 +1,65 @@
-<!DOCTYPE html>
+<?php 
+  // ここにDBに登録する処理を記述する
+//1 DBへ接続
+$dsn= 'mysql:dbname=myfriends;host=localhost';
+$user= 'root';
+$password='';
+  $dbh= new PDO($dsn, $user, $password);
+  $dbh->query('SET NAMES utf8');
+
+
+/////////////////////////////////
+
+  $editName= '';
+  $editAge= '';
+
+  //1 パラメータを受け取る
+  $friend_id= $_GET['friend_id'];
+
+  //2受け取ったパラメーターに紐づく友達のデータを取得するSQL文作成(DB内のfriendsというテーブルから引っ張ってくる)
+$sql= 'SELECT * FROM `friends` WHERE`friend_id`=?';
+$data[]=$friend_id;
+
+// SQL実行
+$stmt= $dbh->prepare($sql);
+  $stmt->execute($data);
+
+
+  //友達のデータを取得
+  $friends= $stmt->fetch(PDO::FETCH_ASSOC);
+
+////////////////////////////////////////////////////
+  //セレクトボックス用の都道府県を取得
+  //SQL文（DB内のareasというテーブルから引っ張ってくる）
+  $sql='SELECT * FROM `areas`';
+
+  // SQL実行
+$stmt= $dbh->prepare($sql);
+  $stmt->execute();
+
+//取得データ格納用変数
+$areas= array();
+  ////3 データを取得
+while (1) {
+    $rec= $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($rec==false){
+      break;
+    }
+    $areas[]= $rec;
+  }
+  // var_dump($areas);
+
+///////////////////////////////////////////////
+//値を変数に格納
+    $editName = $friends['friend_name'];
+    $editAge = $friends['age'];
+
+
+//DB切断
+$dbh= null;
+
+?>
+  <!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta charset="utf-8">
@@ -53,7 +114,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">名前</label>
               <div class="col-sm-10">
-                <input type="text" name="name" class="form-control" placeholder="山田　太郎" value="山田　太郎">
+                <input type="text" name="friend_name" class="form-control" placeholder="editName" required value="<?php echo $editName; ?>">
               </div>
             </div>
             <!-- 出身 -->
@@ -62,11 +123,13 @@
               <div class="col-sm-10">
                 <select class="form-control" name="area_id">
                   <option value="0">出身地を選択</option>
-                  <option value="1" selected>北海道</option>
-                  <option value="2">青森</option>
-                  <option value="3">岩手</option>
-                  <option value="4">宮城</option>
-                  <option value="5">秋田</option>
+                  <?php foreach($areas as $area):?>
+                    <?php if ($area['area_id']== $friends['area_id']): ?>
+                  <option value="<?php echo $area['area_id'];?>" selected><?php echo $area['area_name'];?></option>
+                     <?php else: ?>
+                      <option value="<?php echo $area['area_id'];?>"><?php echo $area['area_name'];?></option>
+                <?php endif; ?>
+                  <?php endforeach; ?>
                 </select>
               </div>
             </div>
@@ -76,8 +139,13 @@
               <div class="col-sm-10">
                 <select class="form-control" name="gender">
                   <option value="0">性別を選択</option>
+                  <?php if ($friends['gender']==1):?>
                   <option value="1" selected>男性</option>
                   <option value="2">女性</option>
+                  <?php elseif($friends['gender']==2):?>
+                    <option value="1">男性</option>
+                  <option value="2" selected>女性</option>
+                  <?php endif; ?>
                 </select>
               </div>
             </div>
@@ -85,7 +153,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">年齢</label>
               <div class="col-sm-10">
-                <input type="text" name="age" class="form-control" placeholder="例：27" value="27">
+                <input type="text" name="age" class="form-control" placeholder="editAge" required value="<?php echo $editAge; ?>">
               </div>
             </div>
 
