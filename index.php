@@ -8,7 +8,7 @@ $password='';
   $dbh->query('SET NAMES utf8');
 
 //2 SQL作成
-  $sql= 'SELECT * FROM `areas`';
+  $sql= 'SELECT `areas`.`area_id`,`areas`.`area_name`, COUNT(`friend_id`) AS friends_cnt FROM `areas` LEFT JOIN `friends`ON `areas`.`area_id`=`friends`.`area_id`GROUP BY`areas`.`area_id` ORDER BY `areas`.`area_id`';
 
 //3 SQL実行
   $stmt= $dbh->prepare($sql);
@@ -97,7 +97,7 @@ $dbh= null;
             <tr>
               <td><div class="text-center"><?php echo $area['area_id']; ?></div></td>
               <td><div class="text-center"><a href="show.php?area_id=<?php echo $area['area_id']; ?>"><?php echo $area['area_name'] ?></a></div></td>
-              <td><div class="text-center">3</div></td>
+              <td><div class="text-center"><?php echo $area['friends_cnt']; ?></div></td>
             </tr>
           <?php endforeach; ?>
           </tbody>
