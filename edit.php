@@ -28,7 +28,7 @@ $stmt= $dbh->prepare($sql);
   //友達のデータを取得
   $friends= $stmt->fetch(PDO::FETCH_ASSOC);
 
-  ///////////////////////////////////////////////
+
 //値を変数に格納
     $editName = $friends['friend_name'];
     $editAge = $friends['age'];
@@ -54,6 +54,7 @@ while (1) {
     $areas[]= $rec;
   }
   // var_dump($areas);
+////////////////////////////////////////////////
 
 //データ更新（更新ボタンクリック時）
 if(!empty($_POST)){
@@ -68,6 +69,9 @@ $edit_data[]= $friend_id;
 $stmt= $dbh->prepare($sql);
   $stmt->execute($edit_data);
 
+////登録後index.phpに移行するようにする
+  header('Location: index.php');
+exit();
 
 }
 
