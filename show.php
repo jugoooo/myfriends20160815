@@ -7,6 +7,20 @@ $password='';
   $dbh= new PDO($dsn, $user, $password);
   $dbh->query('SET NAMES utf8');
 
+//削除処理 
+  //削除処理後に友達のデータを取ってくる必要がないので、ここで実行
+  if(!empty($_GET['action']) && $_GET['action']=='delete'){
+    $sql='DELETE FROM `friends` WHERE `friend_id`=?';
+    $data[]= $_GET['friend_id'];
+    //SQL実行
+    $stmt= $dbh->prepare($sql);
+  $stmt->execute($data);
+
+  //リダイレクト処理
+  header('location:index.php');
+  exit();
+  }
+
   //2 GETパラメーターの取得
   $area_id= $_GET['area_id'];
 
@@ -125,7 +139,7 @@ $dbh= null;
               <td>
                 <div class="text-center">
                   <a href="edit.php?friend_id=<?php echo $friend['friend_id'];?>"><i class="fa fa-pencil"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="javascript:void(0);" onclick="destroy();"><i class="fa fa-trash"></i></a>
+                  <a href="javascript:void(0);" onclick="destroy(<?php echo $friend['friend_id']; ?>);"><i class="fa fa-trash"></i></a>
                 </div>
               </td>
             </tr>
@@ -138,6 +152,19 @@ $dbh= null;
     </div>
   </div>
 
+<script>
+  function destroy(friend_id){
+  //ポップアップを表示
+  if (confirm('削除しますか？')==true) {
+    //OKボタンを押した時
+    location.href= 'show.php?action=delete&friend_id=' + friend_id;
+    return true;
+   }else{
+//キャンセルを押した時
+    return false;
+   }
+  }
+</script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
